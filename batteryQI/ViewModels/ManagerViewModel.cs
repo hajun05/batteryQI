@@ -17,14 +17,16 @@ using System.Collections.ObjectModel;
 
 namespace batteryQI.ViewModels
 {
-    // 관리자 페이지
+    // 관리자 페이지에서 필요한 데이터 관리 및 업데이트, 그리고 DB와의 상호작용을 담당
     internal partial class ManagerViewModel : ViewModelBases
     {
-        private Manager _manager = Manager.Instance();
-        private string _manufacName = "";
-        private IDictionary<string, string> _manufacDict = new Dictionary<string, string>();
-        private ObservableCollection<KeyValuePair<string, string>> _manufacCollection = new ObservableCollection<KeyValuePair<string, string>>();
-        private int _newAmount;
+        private Manager _manager; // 로그인한 관리자의 정보를 관리
+        private string _manufacName = ""; // 새 제조사 항목 추가시 사용
+        private IDictionary<string, string> _manufacDict // DB에서 가져온 제조사 정보 저장(미사용)
+            = new Dictionary<string, string>(); 
+        private ObservableCollection<KeyValuePair<string, string>> _manufacCollection // ObservableCollection을 사용하면 컬렉션 변경 시 UI가 자동 갱신
+            = new ObservableCollection<KeyValuePair<string, string>>();
+        private int _newAmount; // 새 작업량 설정시 사용
         public IDictionary<string, string> ManufacDict
         {
             get => _manufacDict;
@@ -59,27 +61,28 @@ namespace batteryQI.ViewModels
             _newAmount = _manager.WorkAmount;
         }
 
-
-        private void getManafactureNameID() // DB에서 제조사 리스트 가져오기
+        // DB에서 manufacture 테이블의 모든 데이터를 가져온 후, 각 행의 제조사 이름과 ID를 추출하여 _manufacCollection에 추가
+        private void getManafactureNameID()
         {
-            // DB에서 가져와서 리스트 초기화하기, ID는 안 가져오고 Name만 추가
-            _manufacCollection.Clear();
+            _manufacCollection.Clear(); // 기존 데이터 제거
+
             List<Dictionary<string, object>> ManufactureList_Raw = _dblink.Select("SELECT * FROM manufacture order by manufacId ASC;");
             foreach (var row in ManufactureList_Raw)
             {
                 string name = row["manufacName"].ToString();
                 string id = row["manufacId"].ToString();
+
+                // ObservableCollection 활용. UI에 바인딩된 콤보박스나 리스트가 자동으로 갱신
                 _manufacCollection.Add(new KeyValuePair<string, string>(name, id));
             }
         }
 
-        [RelayCommand]
-        private void ManufactInsert()
+        // 새 제조사 추가. 사용자가 입력한 제조사명을 DB에 등록
+        [RelayCommand] private void ManufactInsert()
         {
-            // 제조사 인풋
             try
             {
-                if (_dblink.ConnectOk())
+                if (_dblink.ConnectOk()) // DB 연결이 정상인지 확인
                 {
                     if(ManufacName != "")
                     {
@@ -99,10 +102,10 @@ namespace batteryQI.ViewModels
                 System.Windows.MessageBox.Show("입력 오류", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        [RelayCommand]
-        private void amountSaveButton_Click()
+
+        // 월 검사 할당량 수정. 사용자가 수정한 월 검사 할당량(_newAmount)을 DB에 업데이트
+        [RelayCommand] private void amountSaveButton_Click()
         {
-            // 월 검사 할당량 수정 이벤트
             if (_dblink.ConnectOk())
             {
                 if (System.Windows.MessageBox.Show($"할당량을 {_newAmount}로 변경할까요?", "warning", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -118,11 +121,12 @@ namespace batteryQI.ViewModels
             }
         }
 
+        // 검사 완료 건수 조회. 현재 월의 검사 완료 건수를 DB에서 조회해 문자열 형태로 반환
         public string completeAmount()
         {
             try
             {
-                // 분석 완료 개수 가져오기
+                // 분석 완료 개수 가져오기. 월 할당량이기 때문에 현재 년도, 월의 데이터만 쿼리.
                 string query = @$"
                         SELECT COUNT(*) 
                         FROM batteryInfo

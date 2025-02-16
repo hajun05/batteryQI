@@ -35,19 +35,12 @@
     <None Update="weight\deeplab_custom_model2.onnx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="weight\deeplab_model.onnx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="weight\deeplab_model2.onnx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="weight\deeplab_model5.onnx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="weight\" />
   </ItemGroup>
 
   <ItemGroup>
