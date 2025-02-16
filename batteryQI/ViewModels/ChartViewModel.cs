@@ -322,7 +322,7 @@ namespace batteryQI.ViewModels
         public ObservableCollection<TabItemViewModel> Tabs { get; } = new ObservableCollection<TabItemViewModel>();
 
         // 3개의 탭 항목 추가, 초기화. 
-        public TabControlViewModel() // 이부분 생성자 인자 들억가는 것 따로 구조체 같은 것으로 필드해서 만들면 더 좋을듯
+        public TabControlViewModel() // 이부분 생성자 인자 들어가는 것 따로 구조체 같은 것으로 필드해서 만들면 더 좋을듯
         {
             Tabs.Add(new TabItemViewModel { Header = "시간대별 불량수", Content = new HourlyDefectChartViewModel("batteryInfo", "shootDate", "timestamp") });
             Tabs.Add(new TabItemViewModel { Header = "불량유형", Content = new DefectTypePieViewModel() });
