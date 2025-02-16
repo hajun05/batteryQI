@@ -51,7 +51,7 @@ Members : <a href = "https://github.com/hyeyeoung">김혜영</a>, <a href = "htt
 
 <img src = "./img/addmanu.gif"/>
 
-2. 제조사 리스트 추가 기능능
+2. 제조사 리스트 추가 기능
 
 ##### AI 및 데이터 제공
 <a href = "https://www.aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=data&dataSetSn=71687"> AI hub</a>
